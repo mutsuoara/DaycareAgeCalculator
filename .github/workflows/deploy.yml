@@ -21,9 +21,9 @@ jobs:
       - name: Inject Firebase config into index.html
         run: |
           set -euo pipefail
-          sed -i "s|YOUR_API_KEY|${FIREBASE_API_KEY}" index.html
-          sed -i "s|your-project-id.firebaseapp.com|${FIREBASE_API_KEY}" index.html
-          sed -i "s|your-project-id|${FIREBASE_API_KEY}" index.html
+          sed -i "s|YOUR_API_KEY|${FIREBASE_API_KEY}|" index.html
+          sed -i "s|your-project-id.firebaseapp.com|${FIREBASE_API_KEY}|" index.html
+          sed -i "s|your-project-id|${FIREBASE_API_KEY}|" index.html
         shell: bash
 
       - name: Deploy to GitHub Pages
