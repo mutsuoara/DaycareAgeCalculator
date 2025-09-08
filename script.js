@@ -1,10 +1,19 @@
 let birthdates = []; // Array to hold { nickname, birthdate } objects
+let userId = null;
 
-// Load saved birthdates on page load
-document.addEventListener('DOMContentLoaded', function() {
-    const saved = localStorage.getItem('ageCalculatorBirthdates');
+// Wait for Firebase auth state
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        userId = user.uid;
+        loadApp();
+    }
+});
+
+function loadApp() {
+    // Load saved birthdates
+    const saved = localStorage.getItem(`ageCalculatorBirthdates_${userId}`);
     if (saved) {
-        birthdates = JSON.parse(saved).filter(entry => entry.birthdate); // Filter out invalid
+        birthdates = JSON.parse(saved).filter(entry => entry.birthdate);
     }
     if (birthdates.length === 0) {
         addEntry(); // Start with one empty entry
@@ -21,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners
     document.getElementById('referenceDate').addEventListener('change', calculateAges);
     document.getElementById('dateSlider').addEventListener('input', updateReferenceDate);
-});
+}
 
 // Function to add a new entry (with optional pre-filled date and nickname)
 function addEntry(preFillDate = '', preFillNickname = '') {
@@ -65,14 +74,13 @@ function removeEntry(button) {
 
 // Save birthdates to localStorage
 function saveBirthdates() {
-    // Collect current valid entries
     const entries = document.querySelectorAll('.entry');
     birthdates = Array.from(entries).map(entry => {
         const nicknameInput = entry.querySelector('input[type="text"]').value;
         const dateInput = entry.querySelector('input[type="date"]').value;
         return { nickname: nicknameInput.match(/^[A-Za-z]+$/) ? nicknameInput : '', birthdate: dateInput };
-    }).filter(entry => entry.birthdate); // Keep only valid birthdates
-    localStorage.setItem('ageCalculatorBirthdates', JSON.stringify(birthdates));
+    }).filter(entry => entry.birthdate);
+    localStorage.setItem(`ageCalculatorBirthdates_${userId}`, JSON.stringify(birthdates));
 }
 
 // Wrapper to save and calculate on input change
@@ -83,7 +91,7 @@ function saveAndCalculate() {
 
 // Function to clear all data
 function clearAllData() {
-    localStorage.removeItem('ageCalculatorBirthdates');
+    localStorage.removeItem(`ageCalculatorBirthdates_${userId}`);
     location.reload();
 }
 
@@ -105,7 +113,6 @@ function jumpToNextBirthday(button) {
     const birthDate = new Date(birthdateInput + 'T00:00:00');
     const today = new Date();
 
-    // Calculate next birthday
     let nextBdayYear = today.getFullYear();
     if (
         today.getMonth() > birthDate.getMonth() ||
@@ -120,7 +127,6 @@ function jumpToNextBirthday(button) {
     const day = String(nextBirthday.getDate()).padStart(2, '0');
     const newDate = `${year}-${month}-${day}`;
 
-    // Update reference date and slider
     document.getElementById('referenceDate').value = newDate;
     const diffDays = Math.round((nextBirthday - today) / (1000 * 60 * 60 * 24));
     const slider = document.getElementById('dateSlider');
@@ -168,7 +174,6 @@ function calculateAges() {
         const birthdateInput = entry.querySelector('input[type="date"]').value;
         const ageDisplay = entry.querySelector('.age-for-entry');
 
-        // Reset classes
         ageDisplay.className = 'age-for-entry';
 
         if (!birthdateInput) {
@@ -182,7 +187,6 @@ function calculateAges() {
             return;
         }
 
-        // Calculate years, months, days
         let years = referenceDate.getFullYear() - birthDate.getFullYear();
         let months = referenceDate.getMonth() - birthDate.getMonth();
         let days = referenceDate.getDate() - birthDate.getDate();
@@ -190,7 +194,7 @@ function calculateAges() {
         if (days < 0) {
             months--;
             const tempDate = new Date(referenceDate);
-            tempDate.setMonth(tempDate.getMonth(), 0); // Last day of previous month
+            tempDate.setMonth(tempDate.getMonth(), 0);
             days += tempDate.getDate();
         }
 
@@ -199,10 +203,8 @@ function calculateAges() {
             months += 12;
         }
 
-        // Format age string
         const ageString = `Age: ${years} years, ${months} months, ${days} days`;
 
-        // Apply color class for per-entry display
         let colorClass;
         if (years < 2) {
             colorClass = 'col-0to2';
@@ -218,7 +220,6 @@ function calculateAges() {
         ageDisplay.textContent = ageString;
         const displayNickname = nicknameInput.match(/^[A-Za-z]+$/) ? nicknameInput : 'No Name';
 
-        // Sort into age groups with column-specific colors
         if (years < 2) {
             age0to2 += `<li>${displayNickname}: ${years}y ${months}m ${days}d</li>`;
         } else if (years < 3) {
@@ -232,7 +233,6 @@ function calculateAges() {
     age2to3 += '</ul>';
     age3plus += '</ul>';
 
-    // Update global display
     updateGlobalDisplay([age0to2, age2to3, age3plus], true);
 }
 
