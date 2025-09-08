@@ -29,12 +29,24 @@ jobs:
           echo "Before replacement:"
           grep -A 5 "apiKey:" index.html
           
-          sed -i "s|YOUR_API_KEY|${FIREBASE_API_KEY}|" index.html
-          sed -i "s|your-project-id.firebaseapp.com|${FIREBASE_AUTH_DOMAIN}|" index.html
-          sed -i "s|your-project-id|${FIREBASE_PROJECT_ID}|" index.html
+          # Use more precise sed commands to avoid substring replacement issues
+          sed -i "s|YOUR_API_KEY|${FIREBASE_API_KEY}|g" index.html
+          sed -i "s|your-project-id\.firebaseapp\.com|${FIREBASE_AUTH_DOMAIN}|g" index.html
+          sed -i "s|\"your-project-id\"|${FIREBASE_PROJECT_ID}|g" index.html
           
           echo "After replacement:"
           grep -A 5 "apiKey:" index.html
+          
+          echo "Verification - checking if replacements worked:"
+          if grep -q "YOUR_API_KEY" index.html; then
+            echo "ERROR: YOUR_API_KEY was not replaced!"
+            exit 1
+          fi
+          if grep -q "your-project-id" index.html; then
+            echo "ERROR: your-project-id was not replaced!"
+            exit 1
+          fi
+          echo "All replacements successful!"
         shell: bash
 
       - name: Deploy to GitHub Pages
