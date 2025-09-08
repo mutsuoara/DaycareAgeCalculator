@@ -11,7 +11,6 @@ onAuthStateChanged(getAuth(), (user) => {
     }
 });
 
-
 function loadApp() {
     // Load saved birthdates
     const saved = localStorage.getItem(`ageCalculatorBirthdates_${userId}`);

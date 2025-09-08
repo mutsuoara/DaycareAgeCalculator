@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!--    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://your-username.github.io;">-->
+    <!-- CSP commented out to preserve UI: <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://your-username.github.io 'unsafe-eval'; connect-src 'self' https://www.google.com https://accounts.google.com;"> -->
     <title>Age Calculator</title>
     <style>
         body {
@@ -199,20 +199,16 @@
 
 <!-- Firebase SDK as modules -->
 <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-
-    // Your web app's Firebase configuration
+    // Firebase configuration (with placeholders)
     const firebaseConfig = {
         apiKey: "YOUR_API_KEY",
         authDomain: "your-project-id.firebaseapp.com",
         projectId: "your-project-id"
-        // storageBucket: "agecalculator-6d153.firebasestorage.app",
-        // messagingSenderId: "999362485187",
-        // appId: "1:999362485187:web:77390040abb3c9d6843b76"
+        // appId: "your-app-id"
     };
+    // Import Firebase
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -220,6 +216,7 @@
 
     // Handle Google Sign-In
     document.getElementById('signInButton').addEventListener('click', () => {
+        console.log('Button clicked'); // Debug log
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider)
             .then((result) => {
