@@ -8,17 +8,22 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
+    env:
+      FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+      FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Inject Firebase Config
+      - name: Inject Firebase config into index.html
         run: |
-          echo "Secrets: API_KEY=${{ secrets.FIREBASE_API_KEY }}, AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}, PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}"
-          sed -i "s|YOUR_API_KEY|${{ secrets.FIREBASE_API_KEY }}|" index.html
-          sed -i "s|your-project-id.firebaseapp.com|${{ secrets.FIREBASE_AUTH_DOMAIN }}|" index.html
-          sed -i "s|your-project-id|${{ secrets.FIREBASE_PROJECT_ID }}|" index.html
-          cat index.html  # Debug: Output the modified file
+          set -euo pipefail
+          sed -i "s|YOUR_API_KEY|${FIREBASE_API_KEY}" index.html
+          sed -i "s|your-project-id.firebaseapp.com|${FIREBASE_API_KEY}" index.html
+          sed -i "s|your-project-id|${FIREBASE_API_KEY}" index.html
         shell: bash
 
       - name: Deploy to GitHub Pages
