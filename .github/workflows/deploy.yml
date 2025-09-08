@@ -21,9 +21,20 @@ jobs:
       - name: Inject Firebase config into index.html
         run: |
           set -euo pipefail
+          echo "Checking secrets availability..."
+          echo "API_KEY length: ${#FIREBASE_API_KEY}"
+          echo "AUTH_DOMAIN length: ${#FIREBASE_AUTH_DOMAIN}"
+          echo "PROJECT_ID length: ${#FIREBASE_PROJECT_ID}"
+          
+          echo "Before replacement:"
+          grep -A 5 "apiKey:" index.html
+          
           sed -i "s|YOUR_API_KEY|${FIREBASE_API_KEY}|" index.html
           sed -i "s|your-project-id.firebaseapp.com|${FIREBASE_AUTH_DOMAIN}|" index.html
           sed -i "s|your-project-id|${FIREBASE_PROJECT_ID}|" index.html
+          
+          echo "After replacement:"
+          grep -A 5 "apiKey:" index.html
         shell: bash
 
       - name: Deploy to GitHub Pages
