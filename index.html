@@ -197,27 +197,27 @@
     </div>
 </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
-<script>
-    // Firebase configuration (replace with your Firebase project config)
+<!-- Firebase SDK as modules -->
+<script type="module">
+    // Firebase configuration (with placeholders)
     const firebaseConfig = {
         apiKey: "YOUR_API_KEY",
         authDomain: "your-project-id.firebaseapp.com",
-        projectId: "your-project-id.firebaseapp.com"
-        // storageBucket: "YOUR_STORAGE_BUCKET",
-        // messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        // appId: "YOUR_APP_ID"
+        projectId: "your-project-id",
+        appId: "your-app-id"
     };
+    // Import Firebase
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
     // Handle Google Sign-In
     document.getElementById('signInButton').addEventListener('click', () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider)
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider)
             .then((result) => {
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('appContainer').style.display = 'block';
@@ -229,7 +229,7 @@
     });
 
     // Check auth state
-    auth.onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
         if (user) {
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('appContainer').style.display = 'block';
@@ -239,6 +239,6 @@
         }
     });
 </script>
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 </body>
 </html>

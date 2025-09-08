@@ -1,13 +1,16 @@
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+
 let birthdates = []; // Array to hold { nickname, birthdate } objects
 let userId = null;
 
 // Wait for Firebase auth state
-firebase.auth().onAuthStateChanged((user) => {
+onAuthStateChanged(getAuth(), (user) => {
     if (user) {
         userId = user.uid;
         loadApp();
     }
 });
+
 
 function loadApp() {
     // Load saved birthdates
