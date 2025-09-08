@@ -3,77 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!--    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://mutsuoara.github.io;">-->
+<!--    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://your-username.github.io;">-->
     <title>Age Calculator</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
-        label { display: block; margin: 10px 0 5px; }
-        input { width: 100%; padding: 8px; margin-bottom: 5px; box-sizing: border-box; }
-        #ageDisplay { margin: 20px 0; display: flex; gap: 10px; }
-        .age-column { flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 5px; text-align: center; }
-        .age-column h3 { margin: 0 0 5px; font-size: 18px; }
-        .age-column hr { border: 0; border-top: 1px solid #ccc; margin: 5px 0 10px; }
-        .age-column ul { list-style: none; padding: 0; margin: 0; }
-        .age-column li { margin: 5px 0; font-size: 16px; }
-        #age0to2 li, .col-0to2 { color: green; }
-        #age2to3 li, .col-2to3 { color: blue; }
-        #age3plus li, .col-3plus { color: red; }
-        #sliderContainer { margin: 20px 0; }
-        #dateSlider { width: 100%; }
-        #sliderValue { text-align: center; margin-top: 5px; }
-        #entriesContainer { margin-bottom: 10px; }
-        .entry { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
-        .entry label { margin: 0 0 5px 0; font-weight: bold; }
-        .entry input[type="date"] { width: 100%; display: inline-block; }
-        .entry input[type="text"] { width: calc(100% - 30px); display: inline-block; }
-        .birthdate-row { display: flex; gap: 10px; align-items: center; }
-        .birthdate-row input[type="date"] { flex: 3; }
-        .birthdate-row button.jump-btn { flex: 2; padding: 8px; }
-        .remove-btn, .add-btn, .clear-btn { background: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; margin-left: 5px; }
-        .add-btn { background: #4CAF50; margin: 10px 0; padding: 8px 15px; display: block; }
-        .clear-btn { background: #ff4d4d; margin: 10px 0; padding: 8px 15px; display: block; }
-        .age-for-entry { font-size: 18px; margin-top: 5px; }
-        .step-btn, .jump-btn { background: #4CAF50; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; margin: 5px 2px; }
-        .warning { color: red; font-weight: bold; margin-bottom: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+        }
+        #ageDisplay {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+        .age-column {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .age-column h3 {
+            margin: 0 0 5px;
+            font-size: 18px;
+        }
+        .age-column hr {
+            border: 0;
+            border-top: 1px solid #ccc;
+            margin: 5px 0 10px;
+        }
+        .age-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .age-column li {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        #age0to2 li, .col-0to2 {
+            color: green;
+        }
+        #age2to3 li, .col-2to3 {
+            color: blue;
+        }
+        #age3plus li, .col-3plus {
+            color: red;
+        }
+        #sliderContainer {
+            margin: 20px 0;
+        }
+        #dateSlider {
+            width: 100%;
+        }
+        #sliderValue {
+            text-align: center;
+            margin-top: 5px;
+        }
+        #entriesContainer {
+            margin: 10px 0;
+        }
+        .entry {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .entry input[type="date"] {
+            width: 100%;
+            display: inline-block;
+        }
+        .entry input[type="text"] {
+            width: calc(100% - 30px);
+            display: inline-block;
+        }
+        .birthdate-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .birthdate-row input[type="date"] {
+            flex: 3;
+        }
+        .birthdate-row button.jump-btn {
+            flex: 2;
+            padding: 8px;
+        }
+        .remove-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+        .add-btn, .clear-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin: 5px 0;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .clear-btn {
+            background: #ff4d4d;
+        }
+        .age-for-entry {
+            font-size: 18px;
+            margin-top: 5px;
+        }
+        .step-btn, .jump-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin: 5px 2px;
+        }
+        .warning {
+            color: red;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+            font-size: 16px;
+        }
+        #loginContainer {
+            text-align: center;
+        }
+        #appContainer {
+            display: none;
+        }
     </style>
 </head>
 <body>
-<h1>Age Calculator</h1>
-<p class="warning">Do not use real names or sensitive data. Data is stored locally in your browser.</p>
+<div id="loginContainer">
+    <h1>Age Calculator</h1>
+    <button id="signInButton">Sign in with Google</button>
+</div>
+<div id="appContainer">
+    <h1>Age Calculator</h1>
+    <p class="warning">Do not use real names or sensitive data. Data is stored locally in your browser.</p>
 
-<div id="entriesContainer"></div>
-<button class="add-btn" onclick="addEntry()">+ Add Person</button>
-<button class="clear-btn" onclick="clearAllData()">Clear All Data</button>
+    <div id="entriesContainer"></div>
+    <button class="add-btn" onclick="addEntry()">+ Add Person</button>
+    <button class="clear-btn" onclick="clearAllData()">Clear All Data</button>
 
-<label for="referenceDate">Reference Date (defaults to today):</label>
-<input type="date" id="referenceDate">
+    <label for="referenceDate">Reference Date (defaults to today):</label>
+    <input type="date" id="referenceDate">
 
-<div id="sliderContainer">
-    <label for="dateSlider">Slide to adjust date (days from today):</label>
-    <input type="range" id="dateSlider" min="-365" max="365" value="0" step="1">
-    <div id="sliderValue">0 days (today)</div>
-    <button class="step-btn" onclick="stepDate(-1)">-1 Day</button>
-    <button class="step-btn" onclick="stepDate(1)">+1 Day</button>
+    <div id="sliderContainer">
+        <label for="dateSlider">Slide to adjust date (days from today):</label>
+        <input type="range" id="dateSlider" min="-365" max="365" value="0" step="1">
+        <div id="sliderValue">0 days (today)</div>
+        <button class="step-btn" onclick="stepDate(-1)">-1 Day</button>
+        <button class="step-btn" onclick="stepDate(1)">+1 Day</button>
+    </div>
+
+    <div id="ageDisplay">
+        <div class="age-column" id="age0to2">
+            <h3>Infants (0-2)</h3>
+            <hr>
+            <ul></ul>
+        </div>
+        <div class="age-column" id="age2to3">
+            <h3>Toddlers (2-3)</h3>
+            <hr>
+            <ul></ul>
+        </div>
+        <div class="age-column" id="age3plus">
+            <h3>Graduation (3+)</h3>
+            <hr>
+            <ul></ul>
+        </div>
+    </div>
 </div>
 
-<div id="ageDisplay">
-    <div class="age-column" id="age0to2">
-        <h3>Infants (0-2)</h3>
-        <hr>
-        <ul></ul>
-    </div>
-    <div class="age-column" id="age2to3">
-        <h3>Toddlers (2-3)</h3>
-        <hr>
-        <ul></ul>
-    </div>
-    <div class="age-column" id="age3plus">
-        <h3>Graduation (3+)</h3>
-        <hr>
-        <ul></ul>
-    </div>
-</div>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+<script>
+    // Firebase configuration (replace with your Firebase project config)
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
+    // Handle Google Sign-In
+    document.getElementById('signInButton').addEventListener('click', () => {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider)
+            .then((result) => {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'block';
+            })
+            .catch((error) => {
+                console.error('Sign-in error:', error);
+                alert('Failed to sign in: ' + error.message);
+            });
+    });
+
+    // Check auth state
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+        } else {
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('appContainer').style.display = 'none';
+        }
+    });
+</script>
 <script src="script.js"></script>
 </body>
 </html>
