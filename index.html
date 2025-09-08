@@ -199,16 +199,20 @@
 
 <!-- Firebase SDK as modules -->
 <script type="module">
-    // Firebase configuration (with placeholders)
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "your-project-id.firebaseapp.com",
-        projectId: "your-project-id",
-        appId: "your-app-id"
+        apiKey: "FIREBASE_API_KEY",
+        authDomain: "FIREBASE_AUTH_DOMAIN",
+        projectId: "FIREBASE_PROJECT_ID"
+        // storageBucket: "agecalculator-6d153.firebasestorage.app",
+        // messagingSenderId: "999362485187",
+        // appId: "1:999362485187:web:77390040abb3c9d6843b76"
     };
-    // Import Firebase
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
