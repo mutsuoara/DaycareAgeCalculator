@@ -1,0 +1,26 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Inject Firebase Config
+        run: |
+          sed -i "s|YOUR_API_KEY|${{ secrets.FIREBASE_API_KEY }}|" index.html
+          sed -i "s|your-project-id.firebaseapp.com|${{ secrets.FIREBASE_AUTH_DOMAIN }}|" index.html
+          sed -i "s|your-project-id|${{ secrets.FIREBASE_PROJECT_ID }}|" index.html
+        shell: bash
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .

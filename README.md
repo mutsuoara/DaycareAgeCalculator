@@ -26,14 +26,17 @@ The Age Calculator allows users to:
    ```
 2. **Edit Files**:
   - Update `index.html` and `script.js` as needed in IntelliJ or any editor.
-  - Replace Firebase configuration in `index.html` with your project’s config.
-3. **Push to GitHub**:
+  - Replace Firebase configuration in `index.html` with your project’s config (Via GitHub Secrets).
+3. **Set Up GitHub Secrets**:
+  - Go to repository Settings > Secrets and variables > Actions > Secrets.
+  - Add `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, and `FIREBASE_PROJECT_ID` with your Firebase values.
+4. **Push to GitHub**:
   - Initialize Git: `git init`
   - Add files: `git add index.html script.js README.md`
   - Commit: `git commit -m "Initial commit with Google SSO"`
   - Add remote: `git remote add origin https://github.com/your-username/age-calculator.git`
   - Push: `git push -u origin main`
-4. **Enable GitHub Pages**:
+5. **Enable GitHub Pages**:
   - Go to repository Settings > Pages.
   - Set Source to `main` branch, `/ (root)` folder.
   - Access the app at `https://your-username.github.io/age-calculator`.
