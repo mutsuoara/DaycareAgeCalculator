@@ -1,0 +1,51 @@
+name: Deploy Dev to GitHub Pages
+
+on:
+  push:
+    branches:
+      - wait-list-feature
+
+jobs:
+  build-and-deploy-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Inject Firebase Config
+        run: |
+          echo "Action Environment: $GITHUB_ENV"
+          echo "Workflow Context: $GITHUB_CONTEXT"
+          echo "Secrets raw: API_KEY='${{ secrets.FIREBASE_API_KEY }}', AUTH_DOMAIN='${{ secrets.FIREBASE_AUTH_DOMAIN }}', PROJECT_ID='${{ secrets.FIREBASE_PROJECT_ID }}', APP_ID='${{ secrets.FIREBASE_APP_ID }}', STORAGE_BUCKET='${{ secrets.FIREBASE_STORAGE_BUCKET }}', MESSAGING_SENDER_ID='${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}'"
+          if [ -z "${{ secrets.FIREBASE_API_KEY }}" ] || [ -z "${{ secrets.FIREBASE_AUTH_DOMAIN }}" ] || [ -z "${{ secrets.FIREBASE_PROJECT_ID }}" ] || [ -z "${{ secrets.FIREBASE_APP_ID }}" ] || [ -z "${{ secrets.FIREBASE_STORAGE_BUCKET }}" ] || [ -z "${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" ]; then
+            echo "Error: One or more secrets are missing or empty"
+            env
+            exit 1
+          fi
+          echo "Checking index.html before injection..."
+          cat index.html
+          # Verify file is writable and perform substitutions
+          if [ ! -w index.html ]; then
+            echo "Error: index.html is not writable"
+            ls -l
+            exit 1
+          fi
+          sed -i "s|YOUR_API_KEY|${{ secrets.FIREBASE_API_KEY }}|g" index.html || { echo "sed failed for API_KEY"; exit 1; }
+          sed -i "s|your-project-id.firebaseapp.com|${{ secrets.FIREBASE_AUTH_DOMAIN }}|g" index.html || { echo "sed failed for AUTH_DOMAIN"; exit 1; }
+          sed -i "s|your-project-id|${{ secrets.FIREBASE_PROJECT_ID }}|g" index.html || { echo "sed failed for PROJECT_ID"; exit 1; }
+          sed -i "s|YOUR_APP_ID|${{ secrets.FIREBASE_APP_ID }}|g" index.html || { echo "sed failed for APP_ID"; exit 1; }
+          sed -i "s|YOUR_STORAGE_BUCKET|${{ secrets.FIREBASE_STORAGE_BUCKET }}|g" index.html || { echo "sed failed for STORAGE_BUCKET"; exit 1; }
+          sed -i "s|YOUR_MESSAGING_SENDER_ID|${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}|g" index.html || { echo "sed failed for MESSAGING_SENDER_ID"; exit 1; }
+          echo "Verifying changes in index.html..."
+          grep -E "apiKey|authDomain|projectId|appId" index.html
+          echo "Modified index.html after injection:"
+          cat index.html
+        shell: bash
+
+      - name: Deploy to GitHub Pages Dev
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          destination_dir: dev
