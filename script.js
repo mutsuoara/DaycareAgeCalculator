@@ -256,3 +256,11 @@ function updateGlobalDisplay(texts, isHtml) {
         });
     }
 }
+
+// Make functions available globally for HTML onclick handlers
+window.addEntry = addEntry;
+window.removeEntry = removeEntry;
+window.clearAllData = clearAllData;
+window.stepDate = stepDate;
+window.jumpToNextBirthday = jumpToNextBirthday;
+window.saveAndCalculate = saveAndCalculate;
