@@ -204,7 +204,7 @@
         apiKey: "AIzaSyB6-gLp_JMkRPD6fbboLu8b0Kr1F1LhNx0",
         authDomain: "agecalculator-6d153.firebaseapp.com",
         projectId: "agecalculator-6d153",
-        appId: "your-app-id"
+        appId: "1:999362485187:web:84b6e300de0a7dea843b76" // Updated placeholder
     };
     // Import Firebase
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
@@ -220,7 +220,10 @@
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider)
             .then((result) => {
-                console.log('Sign-in successful:', result.user);
+                // Optional: Access credential and token as per doc
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                console.log('Sign-in successful:', result.user, 'Token:', token);
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('appContainer').style.display = 'block';
             })
