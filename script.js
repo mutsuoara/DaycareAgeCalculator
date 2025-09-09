@@ -1,10 +1,15 @@
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+import { getApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 
 let birthdates = []; // Array to hold { nickname, birthdate } objects
 let userId = null;
 
+// Get the Firebase app instance and auth
+const app = getApp();
+const auth = getAuth(app);
+
 // Wait for Firebase auth state
-onAuthStateChanged(getAuth(), (user) => {
+onAuthStateChanged(auth, (user) => {
     if (user) {
         userId = user.uid;
         loadApp();
