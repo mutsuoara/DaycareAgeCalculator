@@ -14,15 +14,18 @@ jobs:
 
       - name: Inject Firebase Config
         run: |
+          echo "Action Environment: $GITHUB_ENV"
+          echo "Secrets raw: API_KEY='${{ secrets.FIREBASE_API_KEY }}', AUTH_DOMAIN='${{ secrets.FIREBASE_AUTH_DOMAIN }}', PROJECT_ID='${{ secrets.FIREBASE_PROJECT_ID }}'"
           if [ -z "${{ secrets.FIREBASE_API_KEY }}" ] || [ -z "${{ secrets.FIREBASE_AUTH_DOMAIN }}" ] || [ -z "${{ secrets.FIREBASE_PROJECT_ID }}" ]; then
             echo "Error: One or more secrets are missing or empty"
+            env
             exit 1
           fi
-          echo "Secrets available: API_KEY=${{ secrets.FIREBASE_API_KEY }}, AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}, PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}"
-          sed -i "s|YOUR_API_KEY|${{ secrets.FIREBASE_API_KEY }}|" index.html
-          sed -i "s|your-project-id.firebaseapp.com|${{ secrets.FIREBASE_AUTH_DOMAIN }}|" index.html
-          sed -i "s|your-project-id|${{ secrets.FIREBASE_PROJECT_ID }}|" index.html
-          cat index.html  # Debug: Output the modified file
+          sed -i "s|YOUR_API_KEY|${{ secrets.FIREBASE_API_KEY }}|" index.html || echo "sed failed for API_KEY"
+          sed -i "s|your-project-id.firebaseapp.com|${{ secrets.FIREBASE_AUTH_DOMAIN }}|" index.html || echo "sed failed for AUTH_DOMAIN"
+          sed -i "s|your-project-id|${{ secrets.FIREBASE_PROJECT_ID }}|" index.html || echo "sed failed for PROJECT_ID"
+          echo "Modified index.html:"
+          cat index.html
         shell: bash
 
       - name: Deploy to GitHub Pages
