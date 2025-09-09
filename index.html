@@ -204,7 +204,7 @@
         apiKey: "YOUR_API_KEY",
         authDomain: "your-project-id.firebaseapp.com",
         projectId: "your-project-id",
-        appId: "your-app-id"
+        appId: "YOUR_APP_ID" // Updated placeholder
     };
     // Import Firebase
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
@@ -220,7 +220,10 @@
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider)
             .then((result) => {
-                console.log('Sign-in successful:', result.user);
+                // Optional: Access credential and token as per doc
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                console.log('Sign-in successful:', result.user, 'Token:', token);
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('appContainer').style.display = 'block';
             })
