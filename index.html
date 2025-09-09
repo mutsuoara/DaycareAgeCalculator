@@ -168,7 +168,10 @@
     <button class="clear-btn" onclick="clearAllData()">Clear All Data</button>
 
     <label for="referenceDate">Reference Date (defaults to today):</label>
-    <input type="date" id="referenceDate">
+    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+        <input type="date" id="referenceDate" style="flex: 1;">
+        <button class="step-btn" onclick="resetToToday()" style="flex: 0 0 auto;">Today's Date</button>
+    </div>
 
     <div id="sliderContainer">
         <label for="dateSlider">Slide to adjust date (days from today):</label>
@@ -201,12 +204,12 @@
 <script type="module">
     // Firebase configuration (with placeholders)
     const firebaseConfig = {
-        apiKey: "AIzaSyB6-gLp_JMkRPD6fbboLu8b0Kr1F1LhNx0",
-        authDomain: "agecalculator-6d153.firebaseapp.com",
-        projectId: "agecalculator-6d153",
-        storageBucket: "agecalculator-6d153.firebasestorage.app",
-        messagingSenderId: "999362485187",
-        appId: "1:999362485187:web:84b6e300de0a7dea843b76"
+        apiKey: "YOUR_API_KEY",
+        authDomain: "your-project-id.firebaseapp.com",
+        projectId: "your-project-id",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
     };
     // Import Firebase
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';

@@ -117,6 +117,20 @@ function stepDate(delta) {
     updateReferenceDate();
 }
 
+// Function to reset reference date to today
+function resetToToday() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('referenceDate').value = today;
+    
+    // Reset slider to 0 (today)
+    const slider = document.getElementById('dateSlider');
+    slider.value = 0;
+    document.getElementById('sliderValue').textContent = '0 days (today)';
+    
+    // Recalculate ages
+    calculateAges();
+}
+
 // Function to jump to the next birthday
 function jumpToNextBirthday(button) {
     const entryDiv = button.closest('.entry');
@@ -267,4 +281,5 @@ function updateGlobalDisplay(texts, isHtml) {
 window.removeEntry = removeEntry;
 window.clearAllData = clearAllData;
 window.stepDate = stepDate;
+window.resetToToday = resetToToday;
 window.jumpToNextBirthday = jumpToNextBirthday;
