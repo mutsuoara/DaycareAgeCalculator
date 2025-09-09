@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSP commented out to preserve UI: <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://your-username.github.io 'unsafe-eval'; connect-src 'self' https://www.google.com https://accounts.google.com;"> -->
+    <!-- CSP commented out to preserve UI -->
     <title>Age Calculator</title>
     <style>
         body {
@@ -203,8 +203,8 @@
     const firebaseConfig = {
         apiKey: "YOUR_API_KEY",
         authDomain: "your-project-id.firebaseapp.com",
-        projectId: "your-project-id"
-        // appId: "your-app-id"
+        projectId: "your-project-id",
+        appId: "your-app-id"
     };
     // Import Firebase
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
@@ -214,18 +214,23 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Handle Google Sign-In
+    // Handle Google Sign-In with popup check
     document.getElementById('signInButton').addEventListener('click', () => {
-        console.log('Button clicked'); // Debug log
+        console.log('Button clicked');
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider)
             .then((result) => {
+                console.log('Sign-in successful:', result.user);
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('appContainer').style.display = 'block';
             })
             .catch((error) => {
                 console.error('Sign-in error:', error);
-                alert('Failed to sign in: ' + error.message);
+                if (error.code === 'auth/popup-blocked') {
+                    alert('Popup blocked by browser. Please allow popups for this site and try again.');
+                } else {
+                    alert('Failed to sign in: ' + error.message);
+                }
             });
     });
 
