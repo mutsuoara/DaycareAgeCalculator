@@ -16,8 +16,8 @@ jobs:
         run: |
           echo "Action Environment: $GITHUB_ENV"
           echo "Workflow Context: $GITHUB_CONTEXT"
-          echo "Secrets raw: API_KEY='${{ secrets.FIREBASE_API_KEY }}', AUTH_DOMAIN='${{ secrets.FIREBASE_AUTH_DOMAIN }}', PROJECT_ID='${{ secrets.FIREBASE_PROJECT_ID }}', APP_ID='${{ secrets.FIREBASE_APP_ID }}'"
-          if [ -z "${{ secrets.FIREBASE_API_KEY }}" ] || [ -z "${{ secrets.FIREBASE_AUTH_DOMAIN }}" ] || [ -z "${{ secrets.FIREBASE_PROJECT_ID }}" ] || [ -z "${{ secrets.FIREBASE_APP_ID }}" ]; then
+          echo "Secrets raw: API_KEY='${{ secrets.FIREBASE_API_KEY }}', AUTH_DOMAIN='${{ secrets.FIREBASE_AUTH_DOMAIN }}', PROJECT_ID='${{ secrets.FIREBASE_PROJECT_ID }}', APP_ID='${{ secrets.FIREBASE_APP_ID }}', STORAGE_BUCKET='${{ secrets.FIREBASE_STORAGE_BUCKET }}', MESSAGING_SENDER_ID='${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}'"
+          if [ -z "${{ secrets.FIREBASE_API_KEY }}" ] || [ -z "${{ secrets.FIREBASE_AUTH_DOMAIN }}" ] || [ -z "${{ secrets.FIREBASE_PROJECT_ID }}" ] || [ -z "${{ secrets.FIREBASE_APP_ID }}" ] || [ -z "${{ secrets.FIREBASE_STORAGE_BUCKET }}" ] || [ -z "${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" ]; then
             echo "Error: One or more secrets are missing or empty"
             env
             exit 1
@@ -34,6 +34,8 @@ jobs:
           sed -i "s|your-project-id.firebaseapp.com|${{ secrets.FIREBASE_AUTH_DOMAIN }}|" index.html || { echo "sed failed for AUTH_DOMAIN"; exit 1; }
           sed -i "s|your-project-id|${{ secrets.FIREBASE_PROJECT_ID }}|" index.html || { echo "sed failed for PROJECT_ID"; exit 1; }
           sed -i "s|YOUR_APP_ID|${{ secrets.FIREBASE_APP_ID }}|" index.html || { echo "sed failed for APP_ID"; exit 1; }
+          sed -i "s|YOUR_STORAGE_BUCKET|${{ secrets.FIREBASE_STORAGE_BUCKET }}|" index.html || { echo "sed failed for STORAGE_BUCKET"; exit 1; }
+          sed -i "s|YOUR_MESSAGING_SENDER_ID|${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}|" index.html || { echo "sed failed for MESSAGING_SENDER_ID"; exit 1; }
           echo "Verifying changes in index.html..."
           grep -E "apiKey|authDomain|projectId|appId" index.html
           echo "Modified index.html after injection:"
