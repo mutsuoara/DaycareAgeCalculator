@@ -65,6 +65,9 @@ function addEntry(preFillDate = '', preFillNickname = '') {
     calculateAges();
 }
 
+// Make addEntry available globally
+window.addEntry = addEntry;
+
 // Function to remove an entry
 function removeEntry(button) {
     const entryDiv = button.closest('.entry');
@@ -95,6 +98,9 @@ function saveAndCalculate() {
     saveBirthdates();
     calculateAges();
 }
+
+// Make functions available globally for HTML onclick handlers (moved here for early availability)
+window.saveAndCalculate = saveAndCalculate;
 
 // Function to clear all data
 function clearAllData() {
@@ -257,10 +263,8 @@ function updateGlobalDisplay(texts, isHtml) {
     }
 }
 
-// Make functions available globally for HTML onclick handlers
-window.addEntry = addEntry;
+// Make remaining functions available globally for HTML onclick handlers
 window.removeEntry = removeEntry;
 window.clearAllData = clearAllData;
 window.stepDate = stepDate;
 window.jumpToNextBirthday = jumpToNextBirthday;
-window.saveAndCalculate = saveAndCalculate;
