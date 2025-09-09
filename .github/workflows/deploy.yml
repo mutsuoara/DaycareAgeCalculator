@@ -42,8 +42,10 @@ jobs:
           cat index.html
         shell: bash
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add index.html
+          git commit -m "Deploy: Inject Firebase configuration" || exit 0
+          git push
