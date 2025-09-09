@@ -24,10 +24,18 @@ jobs:
           fi
           echo "Checking index.html before injection..."
           cat index.html
+          # Verify file is writable and perform substitutions
+          if [ ! -w index.html ]; then
+            echo "Error: index.html is not writable"
+            ls -l
+            exit 1
+          fi
           sed -i "s|YOUR_API_KEY|${{ secrets.FIREBASE_API_KEY }}|" index.html || { echo "sed failed for API_KEY"; exit 1; }
           sed -i "s|your-project-id.firebaseapp.com|${{ secrets.FIREBASE_AUTH_DOMAIN }}|" index.html || { echo "sed failed for AUTH_DOMAIN"; exit 1; }
           sed -i "s|your-project-id|${{ secrets.FIREBASE_PROJECT_ID }}|" index.html || { echo "sed failed for PROJECT_ID"; exit 1; }
           sed -i "s|YOUR_APP_ID|${{ secrets.FIREBASE_APP_ID }}|" index.html || { echo "sed failed for APP_ID"; exit 1; }
+          echo "Verifying changes in index.html..."
+          grep -E "apiKey|authDomain|projectId|appId" index.html
           echo "Modified index.html after injection:"
           cat index.html
         shell: bash
