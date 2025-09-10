@@ -209,7 +209,8 @@
     </div>
 </div>
 
-<!-- Firebase SDK as modules -->
+<!-- TEMPORARILY DISABLED: Firebase SDK as modules -->
+<!--
 <script type="module">
     // Firebase configuration (with placeholders)
     const firebaseConfig = {
@@ -260,6 +261,16 @@
             document.getElementById('loginContainer').style.display = 'block';
             document.getElementById('appContainer').style.display = 'none';
         }
+    });
+</script>
+-->
+
+<!-- TEMPORARILY DISABLED: Show app directly without authentication -->
+<script type="module">
+    // Show the app immediately without authentication
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'block';
     });
 </script>
 <script type="module" src="script.js"></script>

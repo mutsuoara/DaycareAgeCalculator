@@ -1,20 +1,24 @@
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
-import { getApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+// TEMPORARILY DISABLED: Firebase authentication
+// import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+// import { getApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 
 let birthdates = []; // Array to hold { nickname, birthdate } objects
-let userId = null;
+let userId = 'local'; // Use a fixed userId for local testing
 
-// Get the Firebase app instance and auth
-const app = getApp();
-const auth = getAuth(app);
+// TEMPORARILY DISABLED: Firebase authentication
+// const app = getApp();
+// const auth = getAuth(app);
 
-// Wait for Firebase auth state
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        userId = user.uid;
-        loadApp();
-    }
-});
+// TEMPORARILY DISABLED: Wait for Firebase auth state
+// onAuthStateChanged(auth, (user) => {
+//     if (user) {
+//         userId = user.uid;
+//         loadApp();
+//     }
+// });
+
+// Start the app immediately without authentication
+loadApp();
 
 function loadApp() {
     // Load saved birthdates
@@ -25,7 +29,14 @@ function loadApp() {
     if (birthdates.length === 0) {
         addEntry(); // Start with one empty entry
     } else {
-        birthdates.forEach(entry => addEntry(entry.birthdate, entry.nickname)); // Restore saved
+        birthdates.forEach(entry => {
+            const entryDiv = addEntry(entry.birthdate, entry.nickname); // Restore saved
+            // Restore hidden state if needed
+            if (entry.hidden) {
+                const button = entryDiv.querySelector('.hide-btn');
+                toggleHideEntry(button);
+            }
+        });
     }
 
     const today = new Date().toISOString().split('T')[0];
@@ -66,6 +77,8 @@ function addEntry(preFillDate = '', preFillNickname = '') {
     birthdates.push({ nickname: nicknameInput.value, birthdate: dateInput.value, hidden: false });
     saveBirthdates();
     calculateAges();
+    
+    return entryDiv; // Return the entry div for external access
 }
 
 // Make addEntry available globally
@@ -91,7 +104,15 @@ function saveBirthdates() {
     birthdates = Array.from(entries).map(entry => {
         const nicknameInput = entry.querySelector('input[type="text"]').value;
         const dateInput = entry.querySelector('input[type="date"]').value;
-        return { nickname: nicknameInput.match(/^[A-Za-z]+$/) ? nicknameInput : '', birthdate: dateInput };
+        // Find existing entry to preserve hidden state
+        const existingEntry = birthdates.find(existing => 
+            existing.nickname === nicknameInput && existing.birthdate === dateInput
+        );
+        return { 
+            nickname: nicknameInput.match(/^[A-Za-z]+$/) ? nicknameInput : '', 
+            birthdate: dateInput,
+            hidden: existingEntry ? existingEntry.hidden : false
+        };
     }).filter(entry => entry.birthdate);
     localStorage.setItem(`ageCalculatorBirthdates_${userId}`, JSON.stringify(birthdates));
 }
@@ -151,13 +172,23 @@ function toggleHideEntry(button) {
         
         // Update button text and entry appearance
         if (birthdates[entryIndex].hidden) {
-            button.textContent = 'Show';
-            entryDiv.style.opacity = '0.5';
-            entryDiv.style.textDecoration = 'line-through';
+            button.textContent = 'Show Entry';
+            // Hide all content except the button
+            const content = entryDiv.querySelectorAll('label, input, .birthdate-row, .age-for-entry');
+            content.forEach(el => el.style.display = 'none');
+            // Show only the button
+            button.style.display = 'block';
+            button.style.width = '100%';
+            button.style.margin = '5px 0';
         } else {
             button.textContent = 'Hide';
-            entryDiv.style.opacity = '1';
-            entryDiv.style.textDecoration = 'none';
+            // Show all content
+            const content = entryDiv.querySelectorAll('label, input, .birthdate-row, .age-for-entry');
+            content.forEach(el => el.style.display = 'block');
+            // Reset button style
+            button.style.display = 'inline-block';
+            button.style.width = 'auto';
+            button.style.margin = '5px 2px';
         }
         
         // Save and recalculate
@@ -245,7 +276,7 @@ function calculateAges() {
         
         if (entryData && entryData.hidden) {
             ageDisplay.textContent = 'Age: Hidden';
-            return;
+            return; // Skip hidden entries from individual display
         }
 
         if (!birthdateInput) {
