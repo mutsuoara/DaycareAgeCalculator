@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - wait-list-feature
+      - add-hide-people-from-count
 
 jobs:
   build-and-deploy-dev:
@@ -49,3 +50,4 @@ jobs:
           publish_dir: .
           publish_branch: gh-pages
           destination_dir: dev
+
