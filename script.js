@@ -52,7 +52,10 @@ function addEntry(preFillDate = '', preFillNickname = '') {
             <input type="date" value="${preFillDate}" onchange="saveAndCalculate()">
             <button class="jump-btn" onclick="jumpToNextBirthday(this)">Jump to Next Bday</button>
         </div>
-        <button class="remove-btn" onclick="removeEntry(this)">X</button>
+        <div style="display: flex; gap: 5px; margin: 5px 0;">
+            <button class="hide-btn" onclick="toggleHideEntry(this)">Hide</button>
+            <button class="remove-btn" onclick="removeEntry(this)">X</button>
+        </div>
         <div class="age-for-entry">Age: --</div>
     `;
     container.appendChild(entryDiv);
@@ -60,7 +63,7 @@ function addEntry(preFillDate = '', preFillNickname = '') {
     // Update birthdates array
     const nicknameInput = entryDiv.querySelector('input[type="text"]');
     const dateInput = entryDiv.querySelector('input[type="date"]');
-    birthdates.push({ nickname: nicknameInput.value, birthdate: dateInput.value });
+    birthdates.push({ nickname: nicknameInput.value, birthdate: dateInput.value, hidden: false });
     saveBirthdates();
     calculateAges();
 }
@@ -129,6 +132,38 @@ function resetToToday() {
     
     // Recalculate ages
     calculateAges();
+}
+
+// Function to toggle hide/show for an entry
+function toggleHideEntry(button) {
+    const entryDiv = button.closest('.entry');
+    const nicknameInput = entryDiv.querySelector('input[type="text"]').value;
+    const dateInput = entryDiv.querySelector('input[type="date"]').value;
+    
+    // Find the entry in birthdates array
+    const entryIndex = birthdates.findIndex(entry => 
+        entry.nickname === nicknameInput && entry.birthdate === dateInput
+    );
+    
+    if (entryIndex > -1) {
+        // Toggle hidden state
+        birthdates[entryIndex].hidden = !birthdates[entryIndex].hidden;
+        
+        // Update button text and entry appearance
+        if (birthdates[entryIndex].hidden) {
+            button.textContent = 'Show';
+            entryDiv.style.opacity = '0.5';
+            entryDiv.style.textDecoration = 'line-through';
+        } else {
+            button.textContent = 'Hide';
+            entryDiv.style.opacity = '1';
+            entryDiv.style.textDecoration = 'none';
+        }
+        
+        // Save and recalculate
+        saveBirthdates();
+        calculateAges();
+    }
 }
 
 // Function to jump to the next birthday
@@ -203,6 +238,16 @@ function calculateAges() {
 
         ageDisplay.className = 'age-for-entry';
 
+        // Check if this entry is hidden
+        const entryData = birthdates.find(entry => 
+            entry.nickname === nicknameInput && entry.birthdate === birthdateInput
+        );
+        
+        if (entryData && entryData.hidden) {
+            ageDisplay.textContent = 'Age: Hidden';
+            return;
+        }
+
         if (!birthdateInput) {
             ageDisplay.textContent = 'Age: --';
             return;
@@ -247,12 +292,15 @@ function calculateAges() {
         ageDisplay.textContent = ageString;
         const displayNickname = nicknameInput.match(/^[A-Za-z]+$/) ? nicknameInput : 'No Name';
 
-        if (years < 2) {
-            age0to2 += `<li>${displayNickname}: ${years}y ${months}m ${days}d</li>`;
-        } else if (years < 3) {
-            age2to3 += `<li>${displayNickname}: ${years}y ${months}m ${days}d</li>`;
-        } else {
-            age3plus += `<li><span class="${colorClass}">${displayNickname}: ${years}y ${months}m ${days}d</span></li>`;
+        // Only add to age columns if not hidden
+        if (!entryData || !entryData.hidden) {
+            if (years < 2) {
+                age0to2 += `<li>${displayNickname}: ${years}y ${months}m ${days}d</li>`;
+            } else if (years < 3) {
+                age2to3 += `<li>${displayNickname}: ${years}y ${months}m ${days}d</li>`;
+            } else {
+                age3plus += `<li><span class="${colorClass}">${displayNickname}: ${years}y ${months}m ${days}d</span></li>`;
+            }
         }
     });
 
@@ -282,4 +330,5 @@ window.removeEntry = removeEntry;
 window.clearAllData = clearAllData;
 window.stepDate = stepDate;
 window.resetToToday = resetToToday;
+window.toggleHideEntry = toggleHideEntry;
 window.jumpToNextBirthday = jumpToNextBirthday;
